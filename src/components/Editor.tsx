@@ -149,7 +149,7 @@ export function Editor({ content, onChange }: EditorProps) {
                     className="fixed flex items-center justify-center w-6 h-6 rounded-md hover:bg-black/5 cursor-pointer text-gray-300 hover:text-gray-600 transition-colors z-10"
                     style={{
                         top: hoveredNodeRect.top + (hoveredNodeRect.height > 24 ? 2 : (hoveredNodeRect.height - 24) / 2),
-                        left: containerRef.current.getBoundingClientRect().left + 48 // Positioned in the left margin area based on px-24 padding
+                        left: containerRef.current.getBoundingClientRect().left + (window.innerWidth >= 1024 ? 48 : 4) // adjust based on lg screen logic
                     }}
                     onClick={() => {
                         // Open slash menu or create block below
