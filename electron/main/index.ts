@@ -18,7 +18,7 @@ let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        title: 'Note App',
+        title: 'Basis',
         width: 1000,
         height: 700,
         titleBarStyle: 'hiddenInset',

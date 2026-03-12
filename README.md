@@ -1,11 +1,13 @@
-# Note
+# Basis
 
-A cross-platform, offline-first note-taking application inspired by modern block-based editors. Built with React, Electron, and TipTap, it focuses on providing a clean, minimalist UI with a native macOS aesthetic.
+In Linear Algebra, a Basis is a set of vectors that, in a linear combination, can represent every vector in a given vector space.
+
+A cross-platform, offline-first personal knowledge base inspired by modern block-based editors. Built with React, Electron, and TipTap, it focuses on providing a clean, minimalist UI with a native macOS aesthetic.
 
 ## Features
 
 - **Block-based Editor**: Powered by TipTap, offering a flexible and rich text editing experience similar to Notion.
-- **Offline First**: All notes are stored locally as JSON, ensuring your data is always accessible without an internet connection.
+- **Offline First**: All data is stored locally as JSON, ensuring your information is always accessible without an internet connection.
 - **Cross-Platform**: Built on Electron, running natively on macOS, Windows, and Linux.
 - **Modern UI**: Styled with Tailwind CSS and Framer Motion for smooth animations and a premium look and feel.
 - **Developer Experience**: Fast iteration with Vite and TypeScript.
@@ -32,8 +34,8 @@ npm install -g pnpm
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/yourusername/note.git
-cd note
+git clone https://github.com/yourusername/basis.git
+cd basis
 ```
 
 2. **Install dependencies:**

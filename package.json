@@ -1,8 +1,8 @@
 {
-  "name": "note",
+  "name": "basis",
   "version": "0.1.0",
-  "description": "A cross-platform, offline-first note-taking application inspired by modern block-based editors.",
-  "author": "Manuel Nobauer",
+  "description": "A cross-platform, offline-first personal knowledge base inspired by modern block-based editors.",
+  "author": "Manuel Noebauer",
   "private": true,
   "type": "module",
   "main": "dist-electron/index.js",
