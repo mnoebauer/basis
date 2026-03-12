@@ -30,7 +30,9 @@ export function Welcome() {
   };
 
   const handleFinish = () => {
-    login();
+    if (mode) {
+      login(mode, email, folder || undefined);
+    }
   };
 
   const slideVariants = {
