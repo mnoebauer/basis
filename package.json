@@ -10,7 +10,25 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dist:mac": "pnpm run build && electron-builder --mac",
+    "dist:win": "pnpm run build && electron-builder --win",
+    "dist:linux": "pnpm run build && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.basis.app",
+    "productName": "Basis",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist",
+      "dist-electron"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    }
   },
   "dependencies": {
     "@tiptap/core": "^3.20.1",

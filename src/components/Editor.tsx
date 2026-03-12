@@ -106,7 +106,8 @@ export function Editor({ content, onChange }: EditorProps) {
         },
         onUpdate: ({ editor }) => {
             isUpdatingRef.current = true;
-            const md = editor.storage.markdown.getMarkdown();
+            // @ts-ignore
+            const md = (editor.storage as any).markdown.getMarkdown();
             onChange(md);
 
             setTimeout(() => {
@@ -118,7 +119,7 @@ export function Editor({ content, onChange }: EditorProps) {
     useEffect(() => {
         if (editor && content !== undefined && !isUpdatingRef.current) {
             if (typeof content === 'string') {
-                const currentMd = editor.storage.markdown.getMarkdown();
+                const currentMd = (editor.storage as any).markdown.getMarkdown();
                 if (currentMd !== content) {
                     editor.commands.setContent(content || '');
                 }
