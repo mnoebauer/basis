@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FileText, Plus, Trash2 } from 'lucide-react';
 import type { Page } from '../types';
+import { UserProfile } from './UserProfile';
 
 interface SidebarProps {
     pages: Page[];
@@ -9,9 +10,10 @@ interface SidebarProps {
     onCreatePage: () => void;
     onDeletePage: (id: string) => void;
     isOpen?: boolean;
+    onOpenSettings?: () => void;
 }
 
-export function Sidebar({ pages, activePageId, onSelectPage, onCreatePage, onDeletePage, isOpen = true }: SidebarProps) {
+export function Sidebar({ pages, activePageId, onSelectPage, onCreatePage, onDeletePage, isOpen = true, onOpenSettings }: SidebarProps) {
     return (
         <motion.div
             initial={false}
@@ -67,6 +69,7 @@ export function Sidebar({ pages, activePageId, onSelectPage, onCreatePage, onDel
                     </motion.div>
                 ))}
             </div>
+            <UserProfile isOpen={isOpen} onOpenSettings={onOpenSettings} />
         </motion.div>
     );
 }

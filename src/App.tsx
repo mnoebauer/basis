@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar';
 import { Editor } from './components/Editor';
 import { TitleBar } from './components/TitleBar';
 import { PageHeader } from './components/PageHeader';
+import { Settings } from './components/Settings';
 import type { Page, PageMetadata } from './types';
 
 // Augment window object for electron API
@@ -25,6 +26,7 @@ export default function App() {
   const [activePageId, setActivePageId] = useState<string | null>(null);
   const [activeContent, setActiveContent] = useState<any>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     loadPages();
@@ -118,30 +120,37 @@ export default function App() {
         onCreatePage={handleCreatePage}
         onDeletePage={handleDeletePage}
         isOpen={isSidebarOpen}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-white">
-        <TitleBar
-          activePage={activePage}
-          isSidebarOpen={isSidebarOpen}
-          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        />
-
-        {activePageId && activePage ? (
-          <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
-            <PageHeader page={activePage} onChange={handleHeaderChange} />
-            <Editor content={activeContent} onChange={handleEditorChange} />
-          </div>
+      <main className="flex-1 flex flex-col h-full overflow-hidden bg-white relative">
+        {isSettingsOpen ? (
+          <Settings onClose={() => setIsSettingsOpen(false)} />
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4">
-            <p className="text-sm font-medium tracking-wide">Ready to capture your thoughts.</p>
-            <button
-              onClick={handleCreatePage}
-              className="px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-600 transition-colors"
-            >
-              Create a page
-            </button>
-          </div>
+          <>
+            <TitleBar
+              activePage={activePage}
+              isSidebarOpen={isSidebarOpen}
+              onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+            />
+
+            {activePageId && activePage ? (
+              <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
+                <PageHeader page={activePage} onChange={handleHeaderChange} />
+                <Editor content={activeContent} onChange={handleEditorChange} />
+              </div>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4">
+                <p className="text-sm font-medium tracking-wide">Ready to capture your thoughts.</p>
+                <button
+                  onClick={handleCreatePage}
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-600 transition-colors"
+                >
+                  Create a page
+                </button>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
