@@ -5,6 +5,8 @@ import { Editor } from './components/Editor';
 import { TitleBar } from './components/TitleBar';
 import { PageHeader } from './components/PageHeader';
 import { Settings } from './components/Settings';
+import { Welcome } from './components/Welcome';
+import { useAuth } from './contexts/AuthContext';
 import type { Page, PageMetadata, Workspace, Project } from './types';
 
 // Augment window object for electron API
@@ -27,6 +29,7 @@ declare global {
 }
 
 export default function App() {
+  const { isLoggedIn, isLoading } = useAuth();
   const [pages, setPages] = useState<Page[]>([]);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [activePageId, setActivePageId] = useState<string | null>(null);
@@ -150,6 +153,18 @@ export default function App() {
   };
 
   const activePage = pages.find(p => p.id === activePageId);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-white">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isLoggedIn) {
+    return <Welcome />;
+  }
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-white text-gray-900 selection:bg-blue-200/50 selection:text-gray-900">

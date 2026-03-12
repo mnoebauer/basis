@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Settings, User, Briefcase, LogOut, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
 interface UserProfileProps {
     isOpen?: boolean;
@@ -10,6 +11,7 @@ interface UserProfileProps {
 export function UserProfile({ isOpen = true, onOpenSettings }: UserProfileProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const { logout } = useAuth();
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -53,7 +55,13 @@ export function UserProfile({ isOpen = true, onOpenSettings }: UserProfileProps)
                                 <span>Workspace</span>
                             </button>
                             <div className="h-px bg-black/5 my-1" />
-                            <button className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg hover:bg-black/5 transition-colors text-red-600">
+                            <button 
+                                onClick={() => {
+                                    setIsMenuOpen(false);
+                                    logout();
+                                }}
+                                className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg hover:bg-black/5 transition-colors text-red-600"
+                            >
                                 <LogOut size={16} />
                                 <span>Log out</span>
                             </button>

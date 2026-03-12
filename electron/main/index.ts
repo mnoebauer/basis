@@ -21,6 +21,8 @@ function createWindow() {
         title: 'Basis',
         width: 1000,
         height: 700,
+        minWidth: 800,
+        minHeight: 600,
         titleBarStyle: 'hiddenInset',
         vibrancy: 'sidebar',
         visualEffectState: 'active',
