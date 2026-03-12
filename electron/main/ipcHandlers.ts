@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { ipcMain, dialog } from 'electron';
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { app } from 'electron';
@@ -38,6 +38,16 @@ export function setupIpcHandlers() {
 
     ipcMain.handle('get-workspaces', () => {
         return getWorkspaces();
+    });
+
+    ipcMain.handle('select-folder', async () => {
+        const result = await dialog.showOpenDialog({
+            properties: ['openDirectory', 'createDirectory']
+        });
+        if (!result.canceled && result.filePaths.length > 0) {
+            return result.filePaths[0];
+        }
+        return null;
     });
 
     ipcMain.handle('create-workspace', (_, data: { name: string, description?: string, members?: string[] }) => {

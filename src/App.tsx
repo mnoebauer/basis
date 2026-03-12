@@ -20,6 +20,7 @@ declare global {
       savePageContent: (id: string, content?: any, title?: string, metadata?: PageMetadata) => Promise<void>;
       loadPageContent: (id: string) => Promise<any>;
       getWorkspaces: () => Promise<Workspace[]>;
+      selectFolder: () => Promise<string | null>;
       createWorkspace: (data: { name: string, description?: string, members?: string[] }) => Promise<Workspace>;
       createProject: (workspaceId: string, name: string) => Promise<Project>;
       deleteWorkspace: (id: string) => Promise<void>;

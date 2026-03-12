@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     savePageContent: (id: string, content: any, title?: string, metadata?: any) => ipcRenderer.invoke('save-page-content', { id, content, title, metadata }),
     loadPageContent: (id: string) => ipcRenderer.invoke('load-page-content', id),
     getWorkspaces: () => ipcRenderer.invoke('get-workspaces'),
+    selectFolder: () => ipcRenderer.invoke('select-folder'),
     createWorkspace: (data: { name: string, description?: string, members?: string[] }) => ipcRenderer.invoke('create-workspace', data),
     createProject: (workspaceId: string, name: string) => ipcRenderer.invoke('create-project', { workspaceId, name }),
     deleteWorkspace: (id: string) => ipcRenderer.invoke('delete-workspace', id),
