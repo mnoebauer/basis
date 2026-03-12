@@ -19,13 +19,15 @@
     "appId": "com.basis.app",
     "productName": "Basis",
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "public"
     },
     "files": [
       "dist",
       "dist-electron"
     ],
     "mac": {
+      "icon": "public/icon.icns",
       "target": "dmg",
       "category": "public.app-category.productivity"
     }
