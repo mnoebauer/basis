@@ -43,10 +43,7 @@ export function Welcome() {
         
         {/* Left Column */}
         <div className="w-1/2 flex flex-col justify-start pt-12 pr-12">
-          <div className="flex items-center gap-2 mb-16">
-            <div className="w-3 h-3 rounded-full border-2 border-orange-500"></div>
-            <span className="text-sm font-medium text-zinc-800">basis platform</span>
-          </div>
+
 
           <h1 className="text-6xl md:text-7xl text-zinc-900 tracking-tight font-medium mb-10 leading-tight">
             Your thoughts,<br />beautifully organized
