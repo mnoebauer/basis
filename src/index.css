@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-gray-900 bg-transparent;
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Make text selectable only in the editor */
+  .ProseMirror {
+    user-select: text;
+    outline: none;
+    line-height: 1.6;
+  }
+
+  /* Placeholder styling for TipTap */
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #aeaeb2;
+    pointer-events: none;
+    height: 0;
+  }
+
+  /* Heading styles for TipTap */
+  .ProseMirror h1 {
+    @apply text-3xl font-bold mt-4 mb-2;
+  }
+
+  .ProseMirror h2 {
+    @apply text-2xl font-bold mt-3 mb-2;
+  }
+
+  .ProseMirror h3 {
+    @apply text-xl font-bold mt-2 mb-1;
+  }
+
+  .ProseMirror ul {
+    @apply list-disc list-inside my-2;
+  }
+
+  .ProseMirror ol {
+    @apply list-decimal list-inside my-2;
+  }
+
+  .ProseMirror p {
+    @apply my-1 leading-relaxed;
+  }
+}
