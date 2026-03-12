@@ -161,7 +161,7 @@ export function CreateWorkspaceDrawer({ isOpen, onClose, onSubmit }: CreateWorks
                                         {memberInput && (
                                             <button
                                                 type="button"
-                                                onClick={(e) => handleAddMember({ key: 'Enter', preventDefault: () => { } } as any)}
+                                                onClick={() => handleAddMember({ key: 'Enter', preventDefault: () => { } } as any)}
                                                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded"
                                             >
                                                 <Plus size={14} />

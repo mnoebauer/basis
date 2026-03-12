@@ -7,6 +7,7 @@ import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
+import { Markdown } from 'tiptap-markdown';
 import suggestionConfig from './SlashMenu/suggestion';
 
 const Commands = Extension.create({
@@ -95,6 +96,7 @@ export function Editor({ content, onChange }: EditorProps) {
             Commands.configure({
                 suggestion: suggestionConfig,
             }),
+            Markdown,
         ],
         content,
         editorProps: {
@@ -104,8 +106,8 @@ export function Editor({ content, onChange }: EditorProps) {
         },
         onUpdate: ({ editor }) => {
             isUpdatingRef.current = true;
-            const json = editor.getJSON();
-            onChange(json);
+            const md = editor.storage.markdown.getMarkdown();
+            onChange(md);
 
             setTimeout(() => {
                 isUpdatingRef.current = false;
@@ -115,10 +117,16 @@ export function Editor({ content, onChange }: EditorProps) {
 
     useEffect(() => {
         if (editor && content !== undefined && !isUpdatingRef.current) {
-            const currentJson = editor.getJSON();
-            // Only set content if it's fundamentally different to prevent cursor jumping
-            if (JSON.stringify(currentJson) !== JSON.stringify(content)) {
-                editor.commands.setContent(content || '');
+            if (typeof content === 'string') {
+                const currentMd = editor.storage.markdown.getMarkdown();
+                if (currentMd !== content) {
+                    editor.commands.setContent(content || '');
+                }
+            } else {
+                const currentJson = editor.getJSON();
+                if (JSON.stringify(currentJson) !== JSON.stringify(content)) {
+                    editor.commands.setContent(content || '');
+                }
             }
         }
     }, [content, editor]);
