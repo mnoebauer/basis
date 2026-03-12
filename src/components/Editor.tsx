@@ -13,6 +13,8 @@ import { TableHeader } from '@tiptap/extension-table-header';
 import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import { Markdown } from 'tiptap-markdown';
+import { MarkdownMathNode, MarkdownMathExtension } from './extensions/MathExtensionWrapper';
+import { LatexAutocomplete } from './extensions/LatexAutocomplete';
 import suggestionConfig from './SlashMenu/suggestion';
 
 const Commands = Extension.create({
@@ -107,6 +109,9 @@ export function Editor({ content, onChange }: EditorProps) {
             Commands.configure({
                 suggestion: suggestionConfig,
             }),
+            MarkdownMathExtension,
+            MarkdownMathNode,
+            LatexAutocomplete,
             Markdown,
         ],
         content,

@@ -11,3 +11,4 @@ createRoot(document.getElementById('root')!).render(
     </AuthProvider>
   </StrictMode>,
 )
+import 'katex/dist/katex.min.css';
