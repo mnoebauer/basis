@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { Type, Heading1, Heading2, Heading3, List, CheckSquare, Minus } from 'lucide-react';
+import { Type, Heading1, Heading2, Heading3, List, CheckSquare, Minus, Table as TableIcon } from 'lucide-react';
 
 const icons: Record<string, any> = {
     Text: Type,
@@ -9,6 +9,7 @@ const icons: Record<string, any> = {
     Ul: List,
     ListTodo: CheckSquare,
     Divider: Minus,
+    Table: TableIcon,
 };
 
 export const SlashMenu = forwardRef((props: any, ref) => {

@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
 import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import { Markdown } from 'tiptap-markdown';
@@ -93,6 +98,12 @@ export function Editor({ content, onChange }: EditorProps) {
             TaskItem.configure({
                 nested: true,
             }),
+            Table.configure({
+                resizable: true,
+            }),
+            TableRow,
+            TableHeader,
+            TableCell,
             Commands.configure({
                 suggestion: suggestionConfig,
             }),
@@ -158,6 +169,65 @@ export function Editor({ content, onChange }: EditorProps) {
                 >
                     <Plus size={16} strokeWidth={2} />
                 </div>
+            )}
+
+            {editor && (
+                <BubbleMenu 
+                    editor={editor} 
+                    shouldShow={({ editor }: any) => editor.isActive('table')}
+                >
+                    <div className="flex bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-lg overflow-hidden border border-gray-200">
+                        <button
+                            onClick={() => editor.chain().focus().addColumnBefore().run()}
+                            className="px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 border-r border-gray-100"
+                            title="Add Column Before"
+                        >
+                            + Col
+                        </button>
+                        <button
+                            onClick={() => editor.chain().focus().addColumnAfter().run()}
+                            className="px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 border-r border-gray-100"
+                            title="Add Column After"
+                        >
+                            Col +
+                        </button>
+                        <button
+                            onClick={() => editor.chain().focus().deleteColumn().run()}
+                            className="px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 border-r border-gray-100"
+                            title="Delete Column"
+                        >
+                            - Col
+                        </button>
+                        <button
+                            onClick={() => editor.chain().focus().addRowBefore().run()}
+                            className="px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 border-r border-gray-100"
+                            title="Add Row Before"
+                        >
+                            + Row
+                        </button>
+                        <button
+                            onClick={() => editor.chain().focus().addRowAfter().run()}
+                            className="px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 border-r border-gray-100"
+                            title="Add Row After"
+                        >
+                            Row +
+                        </button>
+                        <button
+                            onClick={() => editor.chain().focus().deleteRow().run()}
+                            className="px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 border-r border-gray-100"
+                            title="Delete Row"
+                        >
+                            - Row
+                        </button>
+                        <button
+                            onClick={() => editor.chain().focus().deleteTable().run()}
+                            className="px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                            title="Delete Table"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </BubbleMenu>
             )}
 
             <EditorContent editor={editor} />

@@ -54,6 +54,13 @@ export default {
                     editor.chain().focus().deleteRange(range).setHorizontalRule().run();
                 },
             },
+            {
+                title: 'Table',
+                icon: 'Table',
+                command: ({ editor, range }: any) => {
+                    editor.chain().focus().deleteRange(range).insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run();
+                },
+            },
         ].filter((item) => item.title.toLowerCase().startsWith(query.toLowerCase()));
     },
     render: () => {
