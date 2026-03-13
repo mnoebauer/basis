@@ -354,7 +354,7 @@ export function Editor({ content, onChange }: EditorProps) {
     return (
         <div
             ref={containerRef}
-            className="w-full max-w-4xl mx-auto pb-24 px-8 lg:px-24 h-full relative overflow-y-auto overflow-x-hidden pt-2"
+            className="w-full max-w-4xl mx-auto pb-24 px-8 lg:px-24 relative overflow-x-hidden pt-2"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >

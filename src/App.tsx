@@ -197,7 +197,7 @@ export default function App() {
             />
 
             {activePageId && activePage ? (
-              <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
+              <div className="flex-1 overflow-y-auto overflow-x-hidden">
                 <PageHeader page={activePage} onChange={handleHeaderChange} />
                 <Editor content={activeContent} onChange={handleEditorChange} />
               </div>
