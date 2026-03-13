@@ -1,4 +1,4 @@
-export type PropertyType = 'text' | 'select' | 'date';
+export type PropertyType = 'text' | 'select' | 'date' | 'number' | 'checkbox';
 
 export interface Property {
     id: string;
