@@ -8,7 +8,7 @@ export default {
             {
                 title: 'Text',
                 icon: 'Text',
-                description: 'Plain text block',
+                description: 'Normal paragraph text',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).setParagraph().run();
                 },

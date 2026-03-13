@@ -254,7 +254,7 @@ export function Editor({ content, onChange }: EditorProps) {
             StarterKit.configure({
                 codeBlock: false,
                 dropcursor: {
-                    color: '#DBEAFE',
+                    color: '#93C5FD',
                     width: 4,
                 },
             }),
