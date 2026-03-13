@@ -1,10 +1,14 @@
 import { ReactRenderer } from '@tiptap/react';
 import tippy from 'tippy.js';
 import { SlashMenu } from './SlashMenu';
+import type { Page } from '../../types';
 
-export default {
-    items: ({ query }: { query: string }) => {
-        return [
+export default function createSuggestionConfig(getDatabases: () => Page[]) {
+    return {
+        items: ({ query }: { query: string }) => {
+            const databases = getDatabases();
+
+            const baseItems = [
             {
                 title: 'Text',
                 icon: 'Text',
@@ -105,60 +109,84 @@ export default {
                     editor.chain().focus().deleteRange(range).insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run();
                 },
             },
-        ].filter((item) => item.title.toLowerCase().startsWith(query.toLowerCase()));
-    },
-    render: () => {
-        let component: ReactRenderer;
-        let popup: any;
-
-        return {
-            onStart: (props: any) => {
-                component = new ReactRenderer(SlashMenu, {
-                    props,
-                    editor: props.editor,
-                });
-
-                if (!props.clientRect) {
-                    return;
-                }
-
-                popup = tippy('body', {
-                    getReferenceClientRect: props.clientRect,
-                    appendTo: () => document.body,
-                    content: component.element,
-                    showOnCreate: true,
-                    interactive: true,
-                    trigger: 'manual',
-                    placement: 'bottom-start',
-                });
+            {
+                title: 'Database Link',
+                icon: 'Table',
+                description: databases.length === 0 ? 'Create a database first' : 'Choose a database below',
+                command: () => {
+                    if (databases.length === 0) {
+                        window.alert('Create a database first.');
+                    }
+                },
             },
+            ];
 
-            onUpdate(props: any) {
-                component.updateProps(props);
+            const databaseItems = databases.map((database) => ({
+                title: `Database: ${database.title || 'Untitled Database'}`,
+                icon: 'Table',
+                description: 'Embed this database table',
+                command: ({ editor, range }: any) => {
+                    editor.chain().focus().deleteRange(range).insertDatabaseEmbed(database.id).run();
+                },
+            }));
 
-                if (!props.clientRect) {
-                    return;
-                }
+            return [...baseItems, ...databaseItems].filter((item) =>
+                item.title.toLowerCase().includes(query.toLowerCase())
+            );
+        },
+        render: () => {
+            let component: ReactRenderer;
+            let popup: any;
 
-                popup[0].setProps({
-                    getReferenceClientRect: props.clientRect,
-                });
-            },
+            return {
+                onStart: (props: any) => {
+                    component = new ReactRenderer(SlashMenu, {
+                        props,
+                        editor: props.editor,
+                    });
 
-            onKeyDown(props: any) {
-                if (props.event.key === 'Escape') {
-                    popup[0].hide();
-                    return true;
-                }
-                return (component.ref as any)?.onKeyDown(props);
-            },
+                    if (!props.clientRect) {
+                        return;
+                    }
 
-            onExit() {
-                if (popup && popup.length > 0) {
-                    popup[0].destroy();
-                }
-                component.destroy();
-            },
-        };
-    },
-};
+                    popup = tippy('body', {
+                        getReferenceClientRect: props.clientRect,
+                        appendTo: () => document.body,
+                        content: component.element,
+                        showOnCreate: true,
+                        interactive: true,
+                        trigger: 'manual',
+                        placement: 'bottom-start',
+                    });
+                },
+
+                onUpdate(props: any) {
+                    component.updateProps(props);
+
+                    if (!props.clientRect) {
+                        return;
+                    }
+
+                    popup[0].setProps({
+                        getReferenceClientRect: props.clientRect,
+                    });
+                },
+
+                onKeyDown(props: any) {
+                    if (props.event.key === 'Escape') {
+                        popup[0].hide();
+                        return true;
+                    }
+                    return (component.ref as any)?.onKeyDown(props);
+                },
+
+                onExit() {
+                    if (popup && popup.length > 0) {
+                        popup[0].destroy();
+                    }
+                    component.destroy();
+                },
+            };
+        },
+    };
+}

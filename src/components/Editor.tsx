@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo, type ReactNode } from 'react';
 import {
     Plus,
     Bold,
@@ -51,8 +51,10 @@ import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import { Markdown } from 'tiptap-markdown';
 import { MarkdownMathNode, MarkdownMathExtension } from './extensions/MathExtensionWrapper';
+import { DatabaseEmbedExtension } from './extensions/DatabaseEmbedExtension';
 import { LatexAutocomplete } from './extensions/LatexAutocomplete';
-import suggestionConfig from './SlashMenu/suggestion';
+import createSuggestionConfig from './SlashMenu/suggestion';
+import type { Page } from '../types';
 
 const lowlight = createLowlight(common);
 
@@ -81,6 +83,10 @@ const Commands = Extension.create({
 interface EditorProps {
     content: any;
     onChange: (content: any) => void;
+    pages?: Page[];
+    getPages?: () => Page[];
+    onOpenPage?: (id: string) => void;
+    onLoadPage?: (id: string) => Promise<Page | null>;
 }
 
 function ToolbarButton({ onClick, isActive, children, title, disabled }: {
@@ -208,11 +214,16 @@ function LinkInput({ editor, onClose }: { editor: any; onClose: () => void }) {
     );
 }
 
-export function Editor({ content, onChange }: EditorProps) {
+export function Editor({ content, onChange, pages = [], getPages, onOpenPage, onLoadPage }: EditorProps) {
     const isUpdatingRef = useRef(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const [hoveredNodeRect, setHoveredNodeRect] = useState<DOMRect | null>(null);
     const [showLinkInput, setShowLinkInput] = useState(false);
+    const getCurrentPages = useCallback(() => getPages ? getPages() : pages, [getPages, pages]);
+    const suggestionConfig = useMemo(
+        () => createSuggestionConfig(() => getCurrentPages().filter((page) => page.pageType === 'database')),
+        [getCurrentPages]
+    );
 
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!containerRef.current) return;
@@ -302,6 +313,11 @@ export function Editor({ content, onChange }: EditorProps) {
                     class: 'rounded-lg bg-gray-900 text-gray-100 p-4 font-mono text-sm',
                     spellcheck: 'false',
                 },
+            }),
+            DatabaseEmbedExtension.configure({
+                getPages: getCurrentPages,
+                onOpenPage: onOpenPage || (() => { }),
+                onLoadPage: onLoadPage || (async () => null),
             }),
             Commands.configure({
                 suggestion: suggestionConfig,

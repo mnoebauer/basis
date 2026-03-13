@@ -79,10 +79,14 @@ export const SlashMenu = forwardRef((props: any, ref) => {
                 const Icon = icons[item.icon];
                 return (
                     <button
+                        type="button"
                         className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${index === selectedIndex ? 'bg-black/5 text-gray-900' : 'text-gray-600 hover:bg-black/[0.03]'
                             }`}
                         key={index}
-                        onClick={() => selectItem(index)}
+                        onMouseDown={(event) => {
+                            event.preventDefault();
+                            selectItem(index);
+                        }}
                     >
                         <div className={`flex items-center justify-center w-8 h-8 rounded-lg border ${index === selectedIndex ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-50'}`}>
                             {Icon && <Icon size={16} strokeWidth={1.5} className={index === selectedIndex ? 'text-gray-900' : 'text-gray-400'} />}

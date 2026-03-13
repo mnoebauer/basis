@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Plus, Trash2, Hash, ChevronRight, ChevronDown } from 'lucide-react';
-import type { Page, Workspace } from '../types';
+import { FileText, Plus, Trash2, Hash, ChevronRight, ChevronDown, Table2 } from 'lucide-react';
+import type { Page, Workspace, PageType } from '../types';
 import { UserProfile } from './UserProfile';
 import { useState } from 'react';
 import { CreateWorkspaceDrawer } from './CreateWorkspaceDrawer';
@@ -12,7 +12,7 @@ interface SidebarProps {
     pages: Page[];
     activePageId: string | null;
     onSelectPage: (id: string) => void;
-    onCreatePage: (workspaceId?: string, projectId?: string) => void;
+    onCreatePage: (options?: { workspaceId?: string; projectId?: string; pageType?: PageType; title?: string }) => void;
     onDeletePage: (id: string) => void;
     onCreateWorkspace?: (data: { name: string; description?: string; members?: string[] }) => void;
     onCreateProject?: (workspaceId: string, name: string) => void;
@@ -36,6 +36,8 @@ export function Sidebar({
     isOpen = true,
     onOpenSettings
 }: SidebarProps) {
+    const visiblePages = pages.filter(page => page.pageType !== 'databaseRow');
+
     const [expandedWorkspaces, setExpandedWorkspaces] = useState<Record<string, boolean>>(() => {
         // Expand first workspace by default
         const initialFocus: Record<string, boolean> = {};
@@ -82,9 +84,14 @@ export function Sidebar({
         }
     };
 
-    const handleAddPage = (e: React.MouseEvent, workspaceId: string, projectId: string) => {
+    const handleAddPage = (e: React.MouseEvent, workspaceId: string, projectId: string, pageType: PageType = 'document') => {
         e.stopPropagation();
-        onCreatePage(workspaceId, projectId);
+        onCreatePage({
+            workspaceId,
+            projectId,
+            pageType,
+            title: pageType === 'database' ? 'Untitled Database' : undefined,
+        });
         // Auto expand project
         setExpandedProjects(prev => ({ ...prev, [projectId]: true }));
     };
@@ -178,11 +185,18 @@ export function Sidebar({
                                                 </div>
                                                 <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button
-                                                        onClick={(e) => handleAddPage(e, ws.id, proj.id)}
+                                                        onClick={(e) => handleAddPage(e, ws.id, proj.id, 'document')}
                                                         className="p-1 rounded hover:bg-black/10 text-gray-400 hover:text-gray-800"
-                                                        title="Add Note"
+                                                        title="Add Page"
                                                     >
                                                         <Plus size={14} />
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => handleAddPage(e, ws.id, proj.id, 'database')}
+                                                        className="p-1 rounded hover:bg-black/10 text-gray-400 hover:text-blue-700"
+                                                        title="Add Database"
+                                                    >
+                                                        <Table2 size={14} />
                                                     </button>
                                                     {onDeleteProject && (
                                                         <button
@@ -208,10 +222,10 @@ export function Sidebar({
                                                         exit={{ height: 0, opacity: 0 }}
                                                         className="overflow-hidden pl-5 py-0.5 space-y-0.5"
                                                     >
-                                                        {pages.filter(p => p.workspaceId === ws.id && p.projectId === proj.id).length === 0 ? (
+                                                        {visiblePages.filter(p => p.workspaceId === ws.id && p.projectId === proj.id).length === 0 ? (
                                                             <div className="px-2 py-1 text-[12px] text-gray-400 italic">No notes inside.</div>
                                                         ) : (
-                                                            pages.filter(p => p.workspaceId === ws.id && p.projectId === proj.id).map(page => (
+                                                            visiblePages.filter(p => p.workspaceId === ws.id && p.projectId === proj.id).map(page => (
                                                                 <div
                                                                     key={page.id}
                                                                     className={`group flex items-center justify-between px-2 py-1.5 rounded-md cursor-pointer transition-colors ${activePageId === page.id
@@ -221,7 +235,11 @@ export function Sidebar({
                                                                     onClick={() => onSelectPage(page.id)}
                                                                 >
                                                                     <div className="flex items-center space-x-2 overflow-hidden flex-1">
-                                                                        <FileText size={14} strokeWidth={1.5} className={`${activePageId === page.id ? 'text-gray-800' : 'text-gray-400'}`} />
+                                                                        {page.pageType === 'database' ? (
+                                                                            <Table2 size={14} strokeWidth={1.5} className={`${activePageId === page.id ? 'text-blue-700' : 'text-gray-400'}`} />
+                                                                        ) : (
+                                                                            <FileText size={14} strokeWidth={1.5} className={`${activePageId === page.id ? 'text-gray-800' : 'text-gray-400'}`} />
+                                                                        )}
                                                                         <span className="truncate text-[13px]">{page.title || 'Untitled'}</span>
                                                                     </div>
                                                                     <button

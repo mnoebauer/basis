@@ -53,6 +53,10 @@ export function PageHeader({ page, onChange }: PageHeaderProps) {
         }
     }, [page.id]);
 
+    if (page.pageType === 'database') {
+        return null;
+    }
+
     const emitMetadataChange = (updates: Partial<PageMetadata>) => {
         onChange({
             metadata: {

@@ -171,6 +171,7 @@ function parseMarkdown(rawContent: string) {
                     pages.push({
                         id,
                         title,
+                        pageType: meta.pageType || 'document',
                         updatedAt: stats.mtimeMs,
                         workspaceId: ws.id,
                         projectId: proj.id,
@@ -194,6 +195,8 @@ function parseMarkdown(rawContent: string) {
 
         const title = page.title || 'Untitled';
         const id = page.id || `page-${Date.now()}`;
+        const pageType = page.pageType || 'document';
+        const metadata = page.metadata || {};
         const wsId = page.workspaceId || getWorkspaces()[0]?.id;
         const projId = page.projectId || getWorkspaces()[0]?.projects[0]?.id;
 
@@ -214,13 +217,20 @@ function parseMarkdown(rawContent: string) {
             ...page,
             id,
             title,
+            pageType,
             workspaceId: wsId,
             projectId: projId,
-            metadata: {},
+            metadata,
+            content: page.content,
             updatedAt: Date.now()
         };
 
-        const fileContent = writeMarkdown({ id, title, metadata: {} }, '');
+        const initialContent = page.content !== undefined
+            ? page.content
+            : pageType === 'database'
+                ? { columns: [], rows: [] }
+                : '';
+        const fileContent = writeMarkdown({ id, title, pageType, metadata }, initialContent);
         writeFileSync(filePath, fileContent, 'utf-8');
 
         return newPageInfo;
@@ -254,6 +264,18 @@ function parseMarkdown(rawContent: string) {
         if (!page) return;
 
         const rootDir = getRootDir();
+
+        if (page.pageType === 'database') {
+            const childPages = getAllPages().filter((candidate: any) => candidate.pageType === 'databaseRow' && candidate.metadata?.parentDatabaseId === id);
+
+            childPages.forEach((childPage: any) => {
+                const childFilePath = join(rootDir, childPage.workspaceId, childPage.projectId, childPage._fileName);
+                if (existsSync(childFilePath)) {
+                    unlinkSync(childFilePath);
+                }
+            });
+        }
+
         const filePath = join(rootDir, page.workspaceId, page.projectId, page._fileName);
         
         if (existsSync(filePath)) {
@@ -295,7 +317,7 @@ function parseMarkdown(rawContent: string) {
             }
         }
 
-        const fileData = writeMarkdown({ id: page.id, title: newTitle, metadata: newMetadata }, newContent);
+        const fileData = writeMarkdown({ id: page.id, title: newTitle, pageType: page.pageType || 'document', metadata: newMetadata }, newContent);
         writeFileSync(filePath, fileData, 'utf-8');
     });
 

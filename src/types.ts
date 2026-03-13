@@ -1,4 +1,6 @@
 export type PropertyType = 'text' | 'select' | 'date' | 'number' | 'checkbox';
+export type PageType = 'document' | 'database' | 'databaseRow';
+export type DatabaseColumnType = 'text' | 'number' | 'date' | 'checkbox';
 
 export interface Property {
     id: string;
@@ -9,8 +11,25 @@ export interface Property {
 }
 
 export interface PageMetadata {
-    properties: Property[];
+    properties?: Property[];
     [key: string]: any;
+}
+
+export interface DatabaseRow {
+    id: string;
+    pageId: string;
+    cells: Record<string, string>;
+}
+
+export interface DatabaseColumn {
+    id: string;
+    name: string;
+    type: DatabaseColumnType;
+}
+
+export interface DatabaseContent {
+    columns: DatabaseColumn[];
+    rows: DatabaseRow[];
 }
 
 export interface Workspace {
@@ -31,6 +50,7 @@ export interface Project {
 export interface Page {
     id: string;
     title: string;
+    pageType: PageType;
     updatedAt: number;
     workspaceId: string;
     projectId: string;
