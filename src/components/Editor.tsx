@@ -382,10 +382,19 @@ export function Editor({ content, onChange }: EditorProps) {
                         const { selection } = state;
                         const { empty } = selection;
 
-                        if (!editor.isEditable || empty) return false;
-                        if (!isTextSelection(selection)) return false;
-                        if (editor.isActive('codeBlock')) return false;
-                        if (editor.isActive('table')) return false;
+                        const shouldHide =
+                            !editor.isEditable ||
+                            empty ||
+                            !isTextSelection(selection) ||
+                            editor.isActive('codeBlock') ||
+                            editor.isActive('table');
+
+                        if (shouldHide) {
+                            if (showLinkInput) {
+                                setShowLinkInput(false);
+                            }
+                            return false;
+                        }
 
                         return true;
                     }}
