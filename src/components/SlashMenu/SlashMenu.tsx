@@ -45,6 +45,9 @@ export const SlashMenu = forwardRef((props: any, ref) => {
 
     useImperativeHandle(ref, () => ({
         onKeyDown: ({ event }: any) => {
+            if (!props.items.length) {
+                return false;
+            }
             if (event.key === 'ArrowUp') {
                 upHandler();
                 return true;
