@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
 import {
     Plus,
     Bold,
@@ -86,7 +86,7 @@ interface EditorProps {
 function ToolbarButton({ onClick, isActive, children, title, disabled }: {
     onClick: () => void;
     isActive?: boolean;
-    children: React.ReactNode;
+    children: ReactNode;
     title: string;
     disabled?: boolean;
 }) {
