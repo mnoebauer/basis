@@ -6,8 +6,17 @@ export default {
     items: ({ query }: { query: string }) => {
         return [
             {
+                title: 'Text',
+                icon: 'Text',
+                description: 'Normal paragraph text',
+                command: ({ editor, range }: any) => {
+                    editor.chain().focus().deleteRange(range).setParagraph().run();
+                },
+            },
+            {
                 title: 'Heading 1',
                 icon: 'H1',
+                description: 'Large heading',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).setNode('heading', { level: 1 }).run();
                 },
@@ -15,6 +24,7 @@ export default {
             {
                 title: 'Heading 2',
                 icon: 'H2',
+                description: 'Medium heading',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).setNode('heading', { level: 2 }).run();
                 },
@@ -22,6 +32,7 @@ export default {
             {
                 title: 'Heading 3',
                 icon: 'H3',
+                description: 'Small heading',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).setNode('heading', { level: 3 }).run();
                 },
@@ -29,27 +40,59 @@ export default {
             {
                 title: 'Bullet List',
                 icon: 'Ul',
+                description: 'Unordered list',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).toggleBulletList().run();
                 },
             },
             {
+                title: 'Numbered List',
+                icon: 'Ol',
+                description: 'Ordered list',
+                command: ({ editor, range }: any) => {
+                    editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+                },
+            },
+            {
                 title: 'Task List',
                 icon: 'ListTodo',
+                description: 'Checklist with tasks',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).toggleTaskList().run();
                 },
             },
             {
-                title: 'Text',
-                icon: 'Text',
+                title: 'Quote',
+                icon: 'Quote',
+                description: 'Block quote',
                 command: ({ editor, range }: any) => {
-                    editor.chain().focus().deleteRange(range).setParagraph().run();
+                    editor.chain().focus().deleteRange(range).toggleBlockquote().run();
+                },
+            },
+            {
+                title: 'Code Block',
+                icon: 'CodeBlock',
+                description: 'Syntax highlighted code',
+                command: ({ editor, range }: any) => {
+                    editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
+                },
+            },
+            {
+                title: 'Image',
+                icon: 'Image',
+                description: 'Embed an image via URL',
+                command: ({ editor, range }: any) => {
+                    editor.chain().focus().deleteRange(range).run();
+                    const url = window.prompt('Enter image URL:');
+                    if (url) {
+                        editor.chain().focus().setImage({ src: url }).run();
+                    }
                 },
             },
             {
                 title: 'Divider',
                 icon: 'Divider',
+                description: 'Horizontal divider line',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).setHorizontalRule().run();
                 },
@@ -57,6 +100,7 @@ export default {
             {
                 title: 'Table',
                 icon: 'Table',
+                description: '2×2 table with header',
                 command: ({ editor, range }: any) => {
                     editor.chain().focus().deleteRange(range).insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run();
                 },
