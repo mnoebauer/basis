@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BasisLogo } from "@/components/basis-logo";
@@ -20,7 +20,7 @@ function BlockDivider() {
   );
 }
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next")?.trim();
@@ -139,5 +139,13 @@ export default function LoginPage() {
         <BlockDivider />
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#fafafa]" />}>
+      <LoginContent />
+    </Suspense>
   );
 }

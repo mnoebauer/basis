@@ -2,8 +2,9 @@ type InvitationEmailData = {
   id: string;
   email: string;
   invitation?: {
+    id?: string;
     fullName?: string;
-  };
+  } & Record<string, unknown>;
   organization?: {
     name?: string;
     slug?: string;

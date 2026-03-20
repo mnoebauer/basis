@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BasisLogo } from "@/components/basis-logo";
 import { authClient } from "@/lib/auth-client";
@@ -53,7 +53,7 @@ function BlockDivider() {
   );
 }
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const invitationId = searchParams.get("invitationId")?.trim() ?? "";
@@ -640,5 +640,13 @@ export default function OnboardingPage() {
       <BlockDivider />
       </div>
     </main>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#fafafa]" />}>
+      <OnboardingContent />
+    </Suspense>
   );
 }
