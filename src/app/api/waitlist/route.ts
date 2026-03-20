@@ -4,8 +4,6 @@ import { db } from "@/lib/db/client";
 import { waitlist } from "@/lib/db/schema/waitlist";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 function buildWaitlistEmailHtml() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://withbasis.app";
   
@@ -81,13 +79,20 @@ export async function POST(request: Request) {
     }).onConflictDoNothing({ target: waitlist.email });
     
     // Send confirmation email
-    const fromEmail = process.env.INVITE_EMAIL_FROM || "office@withbasis.app";
-    await resend.emails.send({
-      from: fromEmail,
-      to: email,
-      subject: "You're on the Basis waitlist",
-      html: buildWaitlistEmailHtml(),
-    });
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (resendApiKey) {
+      const fromEmail = process.env.INVITE_EMAIL_FROM || "office@withbasis.app";
+      const resend = new Resend(resendApiKey);
+
+      await resend.emails.send({
+        from: fromEmail,
+        to: email,
+        subject: "You're on the Basis waitlist",
+        html: buildWaitlistEmailHtml(),
+      });
+    } else {
+      console.warn("RESEND_API_KEY is not set; skipping waitlist confirmation email.");
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
