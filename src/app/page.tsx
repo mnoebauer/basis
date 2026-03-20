@@ -316,9 +316,9 @@ export default function Home() {
             <a href="#features" className="hidden sm:block rounded-lg px-3 sm:px-5 py-2 sm:py-2.5 text-[14px] sm:text-[15px] text-black/72 transition hover:bg-black/[0.04]">Features</a>
             <a href="#pricing" className="hidden sm:block rounded-lg px-3 sm:px-5 py-2 sm:py-2.5 text-[14px] sm:text-[15px] text-black/72 transition hover:bg-black/[0.04]">Pricing</a>
             <a href="#blog" className="hidden md:block rounded-lg px-3 sm:px-5 py-2 sm:py-2.5 text-[14px] sm:text-[15px] text-black/72 transition hover:bg-black/[0.04]">Blog</a>
-            <Link href="/" className="rounded-lg bg-black px-4 sm:px-5 py-2 sm:py-2.5 text-[14px] sm:text-[15px] text-white">Log in</Link>
+            <Link href="/login" className="rounded-lg bg-black px-4 sm:px-5 py-2 sm:py-2.5 text-[14px] sm:text-[15px] text-white">Log in</Link>
             <Link
-              href="/"
+              href="/onboarding"
               className="rounded-lg bg-[linear-gradient(90deg,#f4c4ff_0%,#ffd9b5_100%)] px-4 sm:px-5 py-2 sm:py-2.5 text-[14px] sm:text-[15px] text-black"
             >
               Sign up

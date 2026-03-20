@@ -83,6 +83,7 @@ export const invitation = pgTable("auth_invitations", {
     .notNull()
     .references(() => organization.id, { onDelete: "cascade" }),
   email: text("email").notNull(),
+  fullName: text("full_name"),
   role: text("role"),
   status: text("status").notNull().default("pending"),
   expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),

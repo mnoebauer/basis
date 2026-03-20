@@ -1,6 +1,9 @@
 type InvitationEmailData = {
   id: string;
   email: string;
+  invitation?: {
+    fullName?: string;
+  };
   organization?: {
     name?: string;
     slug?: string;
@@ -151,7 +154,14 @@ export async function sendOrganizationInvitationEmail(data: InvitationEmailData,
     throw new Error("INVITE_EMAIL_FROM is required for invitation email delivery.");
   }
 
-  const inviteLink = `${baseURL}/accept-invitation?invitationId=${encodeURIComponent(data.id)}`;
+  const inviteUrl = new URL("/accept-invitation", baseURL);
+  inviteUrl.searchParams.set("invitationId", data.id);
+  inviteUrl.searchParams.set("email", data.email);
+  if (data.invitation?.fullName?.trim()) {
+    inviteUrl.searchParams.set("fullName", data.invitation.fullName.trim());
+  }
+
+  const inviteLink = inviteUrl.toString();
   const content = buildInvitationContent(data, inviteLink);
 
   if (provider === "resend") {

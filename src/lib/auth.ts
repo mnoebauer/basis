@@ -30,6 +30,17 @@ export const auth = betterAuth({
       allowUserToCreateOrganization: true,
       membershipLimit: 100,
       invitationExpiresIn: 60 * 60 * 24 * 7,
+      schema: {
+        invitation: {
+          additionalFields: {
+            fullName: {
+              type: "string",
+              required: false,
+              input: true,
+            },
+          },
+        },
+      },
       async sendInvitationEmail(data) {
         await sendOrganizationInvitationEmail(data, baseURL);
       },

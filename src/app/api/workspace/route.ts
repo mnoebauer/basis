@@ -80,7 +80,7 @@ type OrganizationApi = {
   }) => Promise<unknown>;
   listMembers: (args: { query: { organizationId: string; limit?: number }; headers: Headers }) => Promise<unknown>;
   createInvitation: (args: {
-    body: { email: string; role: string; organizationId: string; resend?: boolean };
+    body: { email: string; role: string; organizationId: string; resend?: boolean; fullName?: string };
     headers: Headers;
   }) => Promise<unknown>;
   listInvitations: (args: {
@@ -213,24 +213,18 @@ async function listOrganizationInvitations(organizationId: string, headers: Head
     headers,
   });
 
-  const parsed = (result ?? {}) as {
-    invitations?: Array<{
-      id: string;
-      email: string;
-      role?: string;
-      status?: string;
-      createdAt?: Date | string;
-    }>;
-    data?: Array<{
-      id: string;
-      email: string;
-      role?: string;
-      status?: string;
-      createdAt?: Date | string;
-    }>;
-  };
+  const normalized = (Array.isArray(result) ? result : null)
+    ?? (result as { invitations?: unknown[] } | null | undefined)?.invitations
+    ?? (result as { data?: unknown[] } | null | undefined)?.data
+    ?? [];
 
-  const rows = parsed.invitations ?? parsed.data ?? [];
+  const rows = normalized as Array<{
+    id: string;
+    email: string;
+    role?: string;
+    status?: string;
+    createdAt?: Date | string;
+  }>;
 
   return rows
     .filter((item) => (item.status ?? "pending") === "pending")
@@ -597,6 +591,7 @@ export async function POST(request: Request) {
           role: toOrganizationRole(body.role),
           organizationId,
           resend: true,
+          fullName: body.fullName?.trim() || undefined,
         },
         headers: authHeaders,
       });

@@ -472,7 +472,7 @@ function PlatformContent() {
     );
   }
 
-  if (!workspaceId || jobs.length === 0) {
+  if (!workspaceId) {
     return (
       <main className="min-h-screen bg-white p-8 text-black">
         <h1 className="text-3xl font-semibold tracking-[-0.02em]">No workspace data yet</h1>
@@ -646,7 +646,7 @@ function PlatformContent() {
         </header>
 
         <div className="flex items-center justify-between border-b border-black/8 px-4 py-4 sm:px-6">
-          {isJobOverviewOpen ? (
+          {isJobOverviewOpen && jobs.length > 0 ? (
             <div className="flex items-center gap-4">
               <button
                 type="button"
@@ -666,7 +666,9 @@ function PlatformContent() {
           ) : (
             <div>
               <p className="text-[12px] font-medium uppercase tracking-[0.22em] text-black/35">Posted roles</p>
-              <h1 className="text-3xl font-semibold tracking-[-0.03em] text-black sm:text-4xl">Choose a job opening</h1>
+              <h1 className="text-3xl font-semibold tracking-[-0.03em] text-black sm:text-4xl">
+                {jobs.length === 0 ? "No jobs yet" : "Choose a job opening"}
+              </h1>
             </div>
           )}
           <div className="flex items-center gap-3">
@@ -675,7 +677,7 @@ function PlatformContent() {
           </div>
         </div>
 
-        {isJobOverviewOpen ? (
+        {isJobOverviewOpen && jobs.length > 0 ? (
           <div className="grid xl:grid-cols-[250px_380px_380px_minmax(0,1fr)]">
             <aside className="border-b border-black/8 px-3 py-3 xl:border-b-0 xl:border-r">
               <nav className="space-y-1">
@@ -1102,7 +1104,9 @@ function PlatformContent() {
           <section className="px-4 py-6 sm:px-6">
             <div className="max-w-3xl">
               <p className="text-[17px] leading-8 text-black/58">
-                Select any active job posting to reopen the hiring workspace for that role.
+                {jobs.length === 0
+                  ? "Create a job opening to start receiving applications."
+                  : "Select any active job posting to reopen the hiring workspace for that role."}
               </p>
             </div>
 

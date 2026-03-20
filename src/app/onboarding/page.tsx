@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BasisLogo } from "@/components/basis-logo";
 import { authClient } from "@/lib/auth-client";
 
@@ -55,13 +55,19 @@ function BlockDivider() {
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const invitationId = searchParams.get("invitationId")?.trim() ?? "";
+  const prefillFullName = searchParams.get("fullName")?.trim() ?? "";
+  const prefillEmail = searchParams.get("email")?.trim().toLowerCase() ?? "";
+  const isInvitationSignup = invitationId.length > 0;
   const [step, setStep] = useState<"account" | "organization">("account");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState(prefillFullName);
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [accountError, setAccountError] = useState("");
+  const [accountNotice, setAccountNotice] = useState("");
   const [accountBusy, setAccountBusy] = useState(false);
   const [organizationBusy, setOrganizationBusy] = useState(false);
   const [organizationError, setOrganizationError] = useState("");
@@ -116,6 +122,7 @@ export default function OnboardingPage() {
     }
 
     setAccountError("");
+    setAccountNotice("");
 
     setAccountBusy(true);
     try {
@@ -127,6 +134,33 @@ export default function OnboardingPage() {
 
       if (result.error) {
         setAccountError(result.error.message ?? "Could not create account.");
+        return;
+      }
+
+      if (isInvitationSignup) {
+        setAccountNotice("Account created. Accepting invitation...");
+
+        const acceptResult = await authClient.organization.acceptInvitation({ invitationId });
+        if (acceptResult.error) {
+          setAccountError(acceptResult.error.message ?? "Could not accept invitation.");
+          setAccountNotice("");
+          return;
+        }
+
+        setAccountNotice("Invitation accepted. Redirecting to your workspace...");
+
+        try {
+          const response = await fetch("/api/workspace", { cache: "no-store" });
+          const payload = await response.json() as { workspaceId?: string };
+          const nextHref = payload.workspaceId
+            ? `/platform?workspaceId=${encodeURIComponent(payload.workspaceId)}`
+            : "/platform";
+
+          router.push(nextHref);
+        } catch {
+          router.push("/platform");
+        }
+
         return;
       }
 
@@ -208,7 +242,11 @@ export default function OnboardingPage() {
           </div>
           <span className="text-black/30">/</span>
           <span className="font-medium text-black/70">
-            {step === "account" ? "Create Account" : "Create Organization"}
+            {isInvitationSignup
+              ? "Join Organization"
+              : step === "account"
+                ? "Create Account"
+                : "Create Organization"}
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -222,9 +260,9 @@ export default function OnboardingPage() {
               disabled={accountBusy}
               className="inline-flex h-9 items-center rounded-md bg-black px-4 text-[14px] font-medium text-white transition-all duration-150 ease-out hover:bg-black/80 hover:shadow-md active:scale-[0.98]"
             >
-              {accountBusy ? "Creating account..." : "Continue"}
+              {accountBusy ? "Creating account..." : isInvitationSignup ? "Create account" : "Continue"}
             </button>
-          ) : (
+          ) : isInvitationSignup ? null : (
             <>
               <button
                 type="button"
@@ -253,12 +291,16 @@ export default function OnboardingPage() {
         <div className="w-full max-w-[640px]">
           {step === "account" ? (
             <section className="rounded-[24px] border border-black/[0.08] bg-white p-6 shadow-sm sm:p-8 relative">
-            <p className="text-[13px] font-medium uppercase tracking-[0.08em] text-black/45">Step 1 of 2</p>
+            <p className="text-[13px] font-medium uppercase tracking-[0.08em] text-black/45">
+              {isInvitationSignup ? "Invitation" : "Step 1 of 2"}
+            </p>
             <h1 className="mt-3 text-[34px] font-bold leading-tight tracking-[-0.02em] text-black sm:text-[40px]">
-              Create your account
+              {isInvitationSignup ? "Create your account to join" : "Create your account"}
             </h1>
             <p className="mt-2 text-[15px] leading-relaxed text-black/62">
-              Start by creating your personal account. You can set up your organization in the next step.
+              {isInvitationSignup
+                ? "You were invited to an organization. Create your account to accept the invitation and continue."
+                : "Start by creating your personal account. You can set up your organization in the next step."}
             </p>
 
             <div className="mt-8 space-y-4">
@@ -323,6 +365,9 @@ export default function OnboardingPage() {
               {accountError ? (
                 <p className="text-[13px] font-medium text-[#b3261e]">{accountError}</p>
               ) : null}
+              {accountNotice ? (
+                <p className="text-[13px] font-medium text-black/65">{accountNotice}</p>
+              ) : null}
 
               <button
                 type="button"
@@ -330,7 +375,11 @@ export default function OnboardingPage() {
                 disabled={accountBusy}
                 className="mt-2 inline-flex h-11 items-center rounded-xl bg-black px-5 text-[14px] font-medium text-white transition-all duration-150 ease-out hover:bg-black/80"
               >
-                {accountBusy ? "Creating account..." : "Continue to organization setup"}
+                {accountBusy
+                  ? "Creating account..."
+                  : isInvitationSignup
+                    ? "Create account and join"
+                    : "Continue to organization setup"}
               </button>
             </div>
           </section>
